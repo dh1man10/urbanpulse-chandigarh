@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const {localDatabase}=require('../server/local-db.cjs');
 (async()=>{
  const {operationsAPI}=await import('../server/operations.mjs');const DB=localDatabase(':memory:');
- const event=crypto.randomUUID(),key='a'.repeat(64),pass='b'.repeat(64),other='c'.repeat(64);
+ const event=crypto.randomUUID(),key='a'.repeat(64);let pass='b'.repeat(64),other='c'.repeat(64);
  async function call(path,body,admin=false){const r=await operationsAPI(new Request('https://example.test/api/operations/'+path+(body?'':'?event='+event),{method:body?'POST':'GET',headers:{...(body?{'Content-Type':'application/json'}:{}),...(admin?{Authorization:'Bearer '+key}:{})},...(body?{body:JSON.stringify({event,...body})}:{})}),{DB});return {status:r.status,data:await r.json()};}
  assert.equal((await call('events',{id:event,operatorKey:key,name:'Demo',date:'2026-10-10',capacity:5})).status,201);
  let inventory=(await call('inventory')).data;const lot=inventory.lots.find(l=>!l.accessible).id;
@@ -11,6 +11,8 @@ const {localDatabase}=require('../server/local-db.cjs');
  assert.equal((await call('reserve',{token:other,name:'Price mismatch',lot,price:9000})).status,409);
  const attempts=await Promise.all([call('reserve',{token:pass,name:'One',lot,price:10000}),call('reserve',{token:other,name:'Two',lot,price:10000})]);
  assert.deepEqual(attempts.map(x=>x.status).sort(),[201,409]);
+ // Either concurrent request may reserve the last space; follow the winner.
+ if(attempts[0].status!==201)[pass,other]=[other,pass];
  assert.equal((await call('reserve',{token:pass,name:'Retry',lot,price:10000})).status,200);
  assert.equal((await call('lot',{lot,capacity:0,price:10000,open:true},true)).status,409);
  assert.equal((await call('lot',{lot,capacity:1,price:12000,open:true},true)).status,200);
@@ -36,3 +38,4 @@ const {localDatabase}=require('../server/local-db.cjs');
  const wrongEvent=await operationsAPI(new Request('https://example.test/api/operations/pass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event:crypto.randomUUID(),token:pass})}),{DB});assert.equal(wrongEvent.status,404);
  DB.close();console.log('PASS: atomic last-space booking, idempotency, operator authorization, price locking, duplicate scans, cancellation, accessible zones, full/closed inventory, and event isolation.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
