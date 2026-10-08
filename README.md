@@ -88,3 +88,5 @@ Import `demo-scenario.json` to load five shuttles, 100 extra spaces, a three-hou
 
 Use the Light theme / Dark theme button in the header. Your preference is saved in this browser; the initial theme follows your device setting. Road colors are teal for free flow, amber for busy, red for congested, and purple dashed for emergency routes. Closed segments use gray dashes. Reports retain a light background for printing.
 
+## Team
+- Tanishq Jain (@jaintanishq310) - Frontend
