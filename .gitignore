@@ -1,0 +1,15 @@
+node_modules/
+.DS_Store
+*.log
+.local-snapshots/
+dist/server/
+
+.local-data/
+dist/.openai/
+
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite-*
+
