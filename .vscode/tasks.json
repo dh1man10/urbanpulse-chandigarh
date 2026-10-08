@@ -1,0 +1,7 @@
+{
+ "version":"2.0.0",
+ "tasks":[
+  {"label":"Start UrbanPulse","type":"process","command":"node","args":["server.cjs"],"isBackground":true,"problemMatcher":[]},
+  {"label":"Build UrbanPulse","type":"process","command":"node","args":["scripts/build-worker.cjs"],"problemMatcher":[]}
+ ]
+}
