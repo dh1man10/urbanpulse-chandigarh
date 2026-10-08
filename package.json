@@ -1,0 +1,20 @@
+{
+  "name": "urbanpulse-prototype",
+  "version": "4.2.0",
+  "private": true,
+  "description": "Portable event impact planning prototype for Chandigarh",
+  "scripts": {
+    "start": "node server.cjs",
+    "build": "node scripts/build-worker.cjs",
+    "test": "node tests/v2.test.cjs && node tests/v3.test.cjs && node tests/readiness.test.cjs && node tests/operations.test.cjs && node tests/traffic.test.cjs && node tests/qr.test.cjs && node scripts/build-worker.cjs && node tests/pages.test.cjs"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.11",
+    "drizzle-orm": "^0.45.3",
+    "jsqr": "^1.4.0",
+    "qrcode-generator": "^2.0.4"
+  }
+}

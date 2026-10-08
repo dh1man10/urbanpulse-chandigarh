@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "plan": {
+    "name": "Sector 17 Festival — improved plan",
+    "venue": "plaza",
+    "date": "2026-10-10",
+    "time": "18:00",
+    "attendance": 5000,
+    "carShare": 55,
+    "occupancy": 2.5,
+    "parking": 850,
+    "window": 2,
+    "duration": 4,
+    "shuttles": 5,
+    "extraParking": 100,
+    "stagger": 1,
+    "closedRoads": [
+      "129545075"
+    ]
+  }
+}

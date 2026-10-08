@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict'),R=require('../dist/readiness-model.js');
+assert.equal(R.accuracy([], 'traffic'),null);
+const sample=[{metric:'traffic',predicted:120,actual:100},{metric:'traffic',predicted:60,actual:100},{metric:'parking',predicted:5,actual:0}];
+assert.deepEqual(R.accuracy(sample,'traffic'),{n:2,mae:30,wape:30,bias:-10});
+assert.equal(R.accuracy(sample,'parking').wape,null);
+assert.equal(R.age('2026-09-01','2026-10-02'),'31 days old · review');
+assert.equal(R.age('2026-02-30','2026-10-02'),'Invalid date');
+assert.equal(R.age('2026-10-03','2026-10-02'),'Future date');
+assert.throws(()=>R.validate({...R.empty(),observations:[{metric:'traffic',predicted:-1,actual:1}]}));
+assert.throws(()=>R.validate({...R.empty(),tasks:Array(51).fill({task:'x'})}));
+assert.throws(()=>R.validate({...R.empty(),reviews:[{comment:{html:'bad'}}]}));
+const independent=sample.map(r=>({...r,independent:true}));
+assert.deepEqual(R.validate(JSON.parse(JSON.stringify({...R.empty(),observations:independent}))).observations,independent);
+assert.throws(()=>R.validate({...R.empty(),observations:sample}));
+console.log('PASS: independent validation metrics, zero observations, date freshness, notebook limits and portable round-trip.');
